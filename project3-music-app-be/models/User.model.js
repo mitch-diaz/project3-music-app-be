@@ -13,7 +13,7 @@ const userSchema = new Schema(
     lastName: {type: String,},
     creatorTitle: {type: String},
     creatorProfile: {type: String},
-    imageUrl: {type: String},
+    imageFile: {type: String},
     songs: { type: 
       [{type: Schema.Types.ObjectId, ref: 'Song'}]
     },

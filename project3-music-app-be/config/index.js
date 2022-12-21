@@ -21,16 +21,16 @@ module.exports = (app) => {
   // Services like heroku use something called a proxy and you need to add this to your server
   app.set("trust proxy", 1);
 
-  // === 👉 USE THIS CORS SETUP FOR POSTMAN TESTING 👇
+  // 👉 USE THIS CORS SETUP FOR POSTMAN TESTING 👇
   // controls a very specific header to pass headers from the frontend
-  app.use(
-    cors({
-      origin: [FRONTEND_URL]
-    })
-  );
+  // app.use(
+  //   cors({
+  //     origin: [FRONTEND_URL]
+  //   })
+  // );
   
 
-  // === 👉 USE THIS CORS SETUP WITH CLIENT SIDE 👇
+  // 👉 USE THIS CORS SETUP WITH CLIENT SIDE DEV 👇
 
   let whitelist = ['http://localhost:5005','http://localhost:3000'];
   let corsOptions = {

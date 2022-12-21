@@ -41,14 +41,12 @@ router.post('/add-song', fileUploader.single("imageFile"), (req, res, next) => {
     User.findById(req.session.currentlyLoggedIn._id)
     .then((theUser) => {
 
-        console.log("FILE UPLOAD IS -->", req.file)
-
         const updateObj = {
         songTitle: req.body.songTitle,
         user: theUser
         } 
         if (req.file) {
-            updateObj.imageUrl = req.file.path
+            updateObj.songFile = req.file.path
         }
         
         console.log({body: req.body, songToCreate});
@@ -59,8 +57,8 @@ router.post('/add-song', fileUploader.single("imageFile"), (req, res, next) => {
               next(new Error("No file uploaded!"));
               return;
             }
-            res.json({ theSongUrl: req.file.path });
-            console.log('theSongFile IS -->', theSongFile)
+            res.json({ songUpload: req.file.path });
+            console.log('songUpload IS -->', songUpload)
           })
 
             User.findByIdAndUpdate(req.session.currentlyLoggedIn._id, {
