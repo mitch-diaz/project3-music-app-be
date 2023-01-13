@@ -31,21 +31,21 @@ router.post('/signup', (req, res, next)=>{
 
 router.post('/login', (req, res, next) => {
   if (req.body.email === '' || req.body.password === '') {
-    res.json({error: "fields cannot be left blank"})
+    res.json({error: "Fields cannot be left blank"})
     return;
   }
  
   User.findOne({ email: req.body.email })
     .then(resultFromDB => {
       if (!resultFromDB) {
-        res.json({error: "Your email or password is not correct"});
+        res.json({error: "The email/password entered is not correct."});
         return;
       } else if (bcryptjs.compareSync(req.body.password, resultFromDB.password)) {
         req.session.currentlyLoggedIn = resultFromDB;
         res.json({message: "Successfully logged in"});
         return;
       } else {
-        res.json({error: "Your email or password is not correct"});
+        res.json({error: "The email/password entered is not correct."});
       }
     })
     .catch(error => console.log(error));
@@ -86,17 +86,14 @@ router.post('/logout', (req, res, next) =>{
 })
 
 
-
-
-
-
 // ============ ✅ USER PROFILE PAGE ============
 
 router.get('/user-profile', (req, res, next) => {
-  User.findById(req.session.currentlyLoggedIn)
-  .then(userFromDB => {
-      res.json(userFromDB);
-      console.log('The User Profile--->', userFromDB);
+  User.find(req.session.currentlyLoggedIn)
+  // User.findById(req.session.user._id)
+  .then(theUser => {
+      res.json(theUser);
+      console.log('The User Profile--->', theUser);
   })
   .catch(err => {
       console.log({err});
