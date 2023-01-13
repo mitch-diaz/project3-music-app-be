@@ -14,6 +14,8 @@ router.post('/signup', (req, res, next)=>{
   .then(salt => bcryptjs.hash(req.body.password, salt))
   .then(hashedPassword => {
     User.create({
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
       email: req.body.email,
       password: hashedPassword,
     })
@@ -125,8 +127,6 @@ router.get('/user-profile', (req, res, next) => {
 router.put('/update/:userId', fileUploader.single("imageFile"), (req, res, next) => {
   console.log("FILE UPLOAD IS -->", req.file)
   const updateObj = {
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
     creatorTitle: req.body.creatorTitle,
     creatorProfile: req.body.creatorProfile,
   } 
