@@ -3,55 +3,24 @@ const router = express.Router();
 const Song = require("../models/Song.model");
 const User = require("../models/User.model");
 const fileUploader = require('../config/cloudinary.config');
-const { Schema, model } = require("mongoose");
 
 
-// ============ ✅ CREATE A SONG ============
-// 👉 needs Cloudinary for file upload
+// ============ CREATE SONG ============
+// multi-part form with upload to Cloudinary
 
-// router.post('/add-song', (req, res ,next) => {
-//     User.findById(req.session.currentlyLoggedIn._id)
-//     .then((theUser) => {
-
-//         const songToCreate = {
-//             songTitle: req.body.songTitle,
-//             user: theUser
-//         }
-
-//         Song.create(songToCreate)
-//         .then((newlyCreatedSong) => {
-//             console.log('NEW SONG --->', newlyCreatedSong)
-//             User.findByIdAndUpdate(req.session.currentlyLoggedIn._id, {
-//                 $push: {songs: newlyCreatedSong}
-//             })
-//             .then((theUserSongList) => {
-//                 res.json(theUserSongList)
-//             })
-//             .catch((err) => {
-//                 res.json(err)
-//             });
-//         })
-//         .catch((err) => {console.log(err)})
-//     })
-// });
-
-// ============ Create Song multi-part form ============
-
-router.post('/add-song', fileUploader.single("imageFile"), (req, res, next) => {
+router.post('/add-song', fileUploader.single("songFile"), (req, res, next) => {
     User.findById(req.session.currentlyLoggedIn._id)
     .then((theUser) => {
 
-        const updateObj = {
+        const songObj = {
         songTitle: req.body.songTitle,
         user: theUser
         } 
         if (req.file) {
-            updateObj.songFile = req.file.path
+            songObj.songFile = req.file.path
         }
-        
-        console.log({body: req.body, songToCreate});
-        
-        Song.create(songToCreate)
+                
+        Song.create(songObj)
         .then(() => {
             if (!req.file) {
               next(new Error("No file uploaded!"));
@@ -64,8 +33,8 @@ router.post('/add-song', fileUploader.single("imageFile"), (req, res, next) => {
             User.findByIdAndUpdate(req.session.currentlyLoggedIn._id, {
                 $push: {songs: newlyCreatedSong}
             })
-            .then((theUserSongList) => {
-                res.json(theUserSongList)
+            .then((newUserSong) => {
+                res.json(newUserSong)
             })
             .catch((err) => {
                 res.json(err)
@@ -75,13 +44,13 @@ router.post('/add-song', fileUploader.single("imageFile"), (req, res, next) => {
 });
 
 
-// ============ ✅ READ A LIST OF SONGS ============
+// ============ READ A LIST OF SONGS ============
 
 router.get("/songs-list", (req, res, next) => {
     Song.find()
 	.then((theSongs) => {
-        console.log('ALL THE SONGS LIST--->', theSongs);
         res.json(theSongs);
+        console.log('ALL THE SONGS LIST--->', theSongs);
 	})
 	.catch((err) => {
         res.json(err);
@@ -89,8 +58,8 @@ router.get("/songs-list", (req, res, next) => {
 });
 
 
-// ============ ✅ DISPLAY ONE SONG ============
-// ❓ Do I need to populate() the user ❓
+// ============ DISPLAY ONE SONG ============
+
 
 router.get("/:songId", (req, res, next) => {
 	Song.findById(req.params.songId)
@@ -104,7 +73,7 @@ router.get("/:songId", (req, res, next) => {
 });
 
 
-// ============ ✅ UPDATE A SONG (song title) ============
+// ============ UPDATE A SONG (just the song title) ============
     
 router.put('/update/:songId', (req, res ,next) => {      
     Song.findByIdAndUpdate(req.params.songId, {

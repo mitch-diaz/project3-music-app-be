@@ -62,8 +62,8 @@ function serializeTheUserObject(userObj){
 }
 
 router.get('/serializeuser', (req, res, next)=>{
-  console.log(req.session);
-  console.log(req.session.currentlyLoggedIn);
+  console.log("req.session-->", req.session);
+  console.log("req.session.currentlyLoggedIn==>", req.session.currentlyLoggedIn);
 
   if(!req.session.currentlyLoggedIn) 
     res.json(null);
@@ -71,6 +71,7 @@ router.get('/serializeuser', (req, res, next)=>{
     User.findById(req.session.currentlyLoggedIn._id)
     .then((theUser)=>{
       res.json(serializeTheUserObject(theUser))
+      console.log('theUser inside serializeTheUserObject-->', theUser);
     })
     .catch((err)=>{
       console.log(err)
@@ -103,27 +104,10 @@ router.get('/user-profile', (req, res, next) => {
 });
 
 
-// ============ ✅ UPDATE USER PROFILE (text info only) =============
-
-// router.put('/update/:userId', (req, res, next) => {
-//     User.findByIdAndUpdate(req.params.userId, {
-//         firstName: req.body.firstName,
-//         lastName: req.body.lastName,
-//         creatorTitle: req.body.creatorTitle,
-//         creatorProfile: req.body.creatorProfile,
-//         // imageUrl: req.body.imageUrl,
-//     })
-//     .then((updatedUserProfile) => {
-//         res.json(updatedUserProfile);
-//         console.log('UPDATED USER PROFILE --> ', updatedUserProfile);
-//     })
-//     .catch((err) => {
-//       console.log({err});
-//     })
-// })
 
 // ============ ✅ USER PROFILE + FILE UPLOAD FOR PICTURE ===========
-// PUT "/update/:userId" => Route that receives the image, sends it to Cloudinary via the fileUploader and returns the image URL
+// PUT "/update/:userId" => Route that receives the image, sends it to Cloudinary via the fileUploader
+
 router.put('/update/:userId', fileUploader.single("imageFile"), (req, res, next) => {
   console.log("FILE UPLOAD IS -->", req.file)
   const updateObj = {

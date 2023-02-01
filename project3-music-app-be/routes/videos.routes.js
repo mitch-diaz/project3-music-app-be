@@ -10,22 +10,22 @@ router.post('/add-video', (req, res ,next) => {
     User.findById(req.session.currentlyLoggedIn._id)
     .then((theUser) => {
 
-        const videoToCreate = {
+        const videoObj = {
             videoUrl: req.body.videoUrl,
             videoTitle: req.body.videoTitle,
             user: theUser
         }
-        
-        console.log({body: req.body, videoToCreate});
-        
-        Video.create(videoToCreate)
+                
+        Video.create(videoObj)
         .then((newlyCreatedVideo) => {
+            res.json(newlyCreatedVideo)
             console.log('NEW VIDEO --->', newlyCreatedVideo)
+            
             User.findByIdAndUpdate(req.session.currentlyLoggedIn._id, {
                 $push: {videos: newlyCreatedVideo}
             })
-            .then((userVideoList) => {
-                res.json(userVideoList)
+            .then((newUserVideo) => {
+                res.json(newUserVideo)
             })
             .catch((err) => {
                 res.json(err)
@@ -86,7 +86,6 @@ router.delete('/delete', (req, res ,next) => {
     Video.findByIdAndDelete(req.body.videoId)
     .then((theDeletedVideo) => {
         console.log('DELETED VIDEO --->', theDeletedVideo)
-        console.log('REQ.SESSION.CURR-LOG-IN --->', req.session.currentlyLoggedIn)
         User.findByIdAndUpdate(req.session.currentlyLoggedIn._id, {
             $pull: {videos: req.body.videoId}
         })

@@ -20,6 +20,9 @@ require("./config")(app);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
+// app.use(express.urlencoded({extended: true}));
+// app.use(express.json());
+
 app.use(express.static('public'));
 // ^ this is the line that tells our app to look inside the public folder for all static assets like images or css files 
 
